@@ -1,0 +1,19 @@
+{
+  "name": "phaser-multiplayer-game",
+  "version": "1.0.0",
+  "description": "Phaser example gone multiplayer!",
+  "main": "lib/game.js",
+  "scripts": {
+    "start": "node .",
+    "dev": "nodemon .",
+    "lint": "standard --verbose | snazzy"
+  },
+  "author": "Rodrigo Alvarez",
+  "license": "MIT",
+  "dependencies": {
+    "ecstatic": "^2.1.0",
+    "express": "^4.14.0",
+    "socket.io": "^1.5.1"
+  },
+  "devDependencies": {}
+}
