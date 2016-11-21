@@ -1,0 +1,12 @@
+#This is the set of configuration need to do in the server side.
+#1. Open this file
+#   sudo vim /etc/vsftpd.conf
+#2. Config and uncomment the following lines 
+
+# listen=YES
+# anonymous_enable=YES
+# local_enable=YES
+# write_enable=YES
+
+#3. Restart the daemon
+#   sudo /etc/init.d/vsftpd restart 
