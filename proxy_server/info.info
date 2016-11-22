@@ -1,1 +1,26 @@
 Intermidiate server for managing the traffic.
+
+It's necesary set a static ip in the server.
+
+vi /etc/network/interfaces
+
+config the following lines
+
+/*** Previous version ***/
+#The loopback network interface 
+
+auto lo
+iface lo inet loopback 
+
+#The primary network interface
+auto eth0
+iface etho inet static
+address ip
+netmask ip
+network ip
+broadcast ip
+gateway ip
+dns-servers  gateway-ip 8.8.8.8
+
+#Now restart the server  and update the repos
+

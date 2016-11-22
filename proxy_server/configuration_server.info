@@ -13,3 +13,19 @@ sudo  vim /etc/squid3/squid.conf
     by default the port is the 3128 but you can find http_port and modify the value
 
 5. Now find the ACL section 
+    Now we are going to add the acl section 
+    acl name_access_list src network-ip/num_bit_mask
+
+6. Now go to the section http_access above of allow localhost add the new acl
+
+    http_access allow name_acces_list
+
+
+7. Now search for cache_dir ufs 
+
+
+8. Now we are goint to block facebook 
+
+acl fb dstdomain .facebook.com
+http_reply_access deny  fb 
+http_access deny CONNECT fb
