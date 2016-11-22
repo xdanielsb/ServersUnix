@@ -1,0 +1,15 @@
+1. Open the following file 
+
+sudo  vim /etc/squid3/squid.conf
+
+2. Search for the text visible_hostname
+3. crete an uncomment line and type the text
+    visible_hostname evolution_proxy #evolution proxy is the name that I want
+4. Optional configurations
+    #Find cache_mgr sends an email if the cache dies
+    cache_mgr dniel096@gmail.com
+
+    #Modify the port
+    by default the port is the 3128 but you can find http_port and modify the value
+
+5. Now find the ACL section 
