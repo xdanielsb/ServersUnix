@@ -1,31 +1,31 @@
 var util = require('util')
 var http = require('http')
 var path = require('path')
-var esctatic = require('ecstatic')
+var ecstatic = require('ecstatic')
 var io = require('socket.io')
 
 var Player = require('./Player')
 
 var port = process.env.PORT || 8080
 
-/* ************************************
-**GAME VARIABLES
-************************************ */
+/* ************************************************
+** GAME VARIABLES
+************************************************ */
+var socket	// Socket controller
+var players	// Array of connected players
 
-var socket // Socket controller
-var players // Array of conected players
+/* ************************************************
+** GAME INITIALISATION
+************************************************ */
 
-/* ************************************
-**GAME INITIALATION
-************************************ */
-
-//Create and start the http server
+// Create and start the http server
 var server = http.createServer(
-  esctatic({root : path.resolve(__dirname, '../public')})
-).listen(port, function(err){
+  ecstatic({ root: path.resolve(__dirname, '../public') })
+).listen(port, function (err) {
   if (err) {
     throw err
   }
+
   init()
 })
 
@@ -35,11 +35,11 @@ function init () {
 
   // Attach Socket.IO to server
   socket = io.listen(server)
+  console.log('Listen on PORT: ', port);
 
   // Start listening for events
   setEventHandlers()
 }
-
 
 /* ************************************************
 ** GAME EVENT HANDLERS
@@ -52,7 +52,6 @@ var setEventHandlers = function () {
 // New socket connection
 function onSocketConnection (client) {
   util.log('New player has connected: ' + client.id)
-
   // Listen for client disconnected
   client.on('disconnect', onClientDisconnect)
 
@@ -84,12 +83,41 @@ function onClientDisconnect () {
 
 // New player has joined
 function onNewPlayer (data) {
-  
+  // Create a new player
+  var newPlayer = new Player(data.x, data.y)
+  newPlayer.id = this.id
+  util.log('newPlayer X: ', newPlayer.getX(),'newPlayer, Y: ',  newPlayer.getY());
+  // Broadcast new player to connected socket clients
+  this.broadcast.emit('new player', {id: newPlayer.id, x: newPlayer.getX(), y: newPlayer.getY()})
+
+  // Send existing players to the new player
+  var i, existingPlayer
+  for (i = 0; i < players.length; i++) {
+    existingPlayer = players[i]
+    this.emit('new player', {id: existingPlayer.id, x: existingPlayer.getX(), y: existingPlayer.getY()})
+  }
+
+  // Add new player to the players array
+  players.push(newPlayer)
 }
 
 // Player has moved
 function onMovePlayer (data) {
+  // Find player in array
+  var movePlayer = playerById(this.id)
 
+  // Player not found
+  if (!movePlayer) {
+    util.log('Player not found: ' + this.id)
+    return
+  }
+
+  // Update player position
+  movePlayer.setX(data.x)
+  movePlayer.setY(data.y)
+  util.log('MOVE X.DATA: ', movePlayer.getX(data.x), 'MOVE Y.DATA', movePlayer.getY(data.y));
+  // Broadcast updated position to connected socket clients
+  this.broadcast.emit('move player', {id: movePlayer.id, x: movePlayer.getX(), y: movePlayer.getY()})
 }
 
 /* ************************************************
