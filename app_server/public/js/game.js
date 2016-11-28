@@ -17,6 +17,7 @@ var land
 var player
 var enemies
 var currentSpeed = 0
+var dir
 var cursors
 var map;
 var layer;
@@ -41,8 +42,8 @@ function create () {
 
   // The base of our player
   var startX = Math.floor((Math.random() * 1300) + 100);
-
   var startY = 500
+  dir = 'right'
 
   console.log('STARTING POSITION: ', startX, ' , ', startY);
   player = game.add.sprite(startX, startY, 'dude')
@@ -62,6 +63,7 @@ function create () {
   enemies = []
 
   player.bringToTop()
+
 
   game.camera.follow(player)
   game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300)
@@ -156,7 +158,11 @@ function onRemovePlayer (data) {
 }
 
 function update () {
+
   game.physics.arcade.collide(player, layer)
+
+
+
   for (var i = 0; i < enemies.length; i++) {
     if (enemies[i].alive) {
       enemies[i].update()
@@ -170,26 +176,40 @@ function update () {
         //  Move to the left
         player.body.velocity.x = -150;
 
-        player.animations.play('left');
+        player.animations.play('move');
+
+        if (dir=='right'){
+          player.scale.x *= -1
+          dir='left'
+        }
     }
     else if (cursors.right.isDown)
     {
         //  Move to the right
         player.body.velocity.x = 150;
 
-        player.animations.play('right');
+        player.animations.play('move');
+        if (dir=='left'){
+          player.scale.x *= -1
+          dir='right'
+        }
     }
     else
     {
         //  Stand still
         player.animations.stop();
-
         player.frame = 4;
     }
+    /*
+    if (cursors.up.isDown) {
+      console.log('CURSOR UP IS DOWN!!');
+    }
+    */
 
     //  Allow the player to jump if they are touching the ground.
-    if (cursors.up.isDown && player.body.touching.down)
+    if (cursors.up.isDown && player.body.onFloor())
     {
+        console.log("CURSOR UP IS DOWN AND PLAYER TOUCHING DOWN!!");
         player.body.velocity.y = -350;
     }
 
