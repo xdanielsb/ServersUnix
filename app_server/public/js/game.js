@@ -45,6 +45,8 @@ function create () {
   var startY = 500
   dir = 'right'
 
+  game.stage.disableVisibilityChange = true;
+
   console.log('STARTING POSITION: ', startX, ' , ', startY);
   player = game.add.sprite(startX, startY, 'dude')
   player.anchor.setTo(0.5, 0.5)
@@ -58,6 +60,7 @@ function create () {
   player.body.collideWorldBounds = true
 
   player.body.gravity.y =400
+  player.body.bounce.y = 1;
 
   // Create some baddies to waste :)
   enemies = []
@@ -210,7 +213,8 @@ function update () {
     if (cursors.up.isDown && player.body.onFloor())
     {
         console.log("CURSOR UP IS DOWN AND PLAYER TOUCHING DOWN!!");
-        player.body.velocity.y = -350;
+        player.body.velocity.y = -500;
+        console.log(player.body.velocity.y);
     }
 
   //sky.tilePosition.x = -game.camera.x
