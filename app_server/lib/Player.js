@@ -1,3 +1,6 @@
+/* ************************************************
+** GAME PLAYER CLASS
+************************************************ */
 var Player = function (startX, startY) {
   var x = startX
   var y = startY
@@ -19,7 +22,6 @@ var Player = function (startX, startY) {
   var setY = function (newY) {
     y = newY
   }
-
   // Define which variables and methods can be accessed
   return {
     getX: getX,

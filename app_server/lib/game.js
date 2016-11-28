@@ -6,7 +6,7 @@ var io = require('socket.io')
 
 var Player = require('./Player')
 
-var port = process.env.PORT || 8080
+var port = process.env.PORT || 8070
 
 /* ************************************************
 ** GAME VARIABLES
@@ -35,7 +35,6 @@ function init () {
 
   // Attach Socket.IO to server
   socket = io.listen(server)
-  console.log('Listen on PORT: ', port);
 
   // Start listening for events
   setEventHandlers()
@@ -52,6 +51,7 @@ var setEventHandlers = function () {
 // New socket connection
 function onSocketConnection (client) {
   util.log('New player has connected: ' + client.id)
+
   // Listen for client disconnected
   client.on('disconnect', onClientDisconnect)
 
@@ -86,7 +86,7 @@ function onNewPlayer (data) {
   // Create a new player
   var newPlayer = new Player(data.x, data.y)
   newPlayer.id = this.id
-  util.log('newPlayer X: ', newPlayer.getX(),'newPlayer, Y: ',  newPlayer.getY());
+
   // Broadcast new player to connected socket clients
   this.broadcast.emit('new player', {id: newPlayer.id, x: newPlayer.getX(), y: newPlayer.getY()})
 
@@ -115,7 +115,7 @@ function onMovePlayer (data) {
   // Update player position
   movePlayer.setX(data.x)
   movePlayer.setY(data.y)
-  util.log('MOVE X.DATA: ', movePlayer.getX(data.x), 'MOVE Y.DATA', movePlayer.getY(data.y));
+
   // Broadcast updated position to connected socket clients
   this.broadcast.emit('move player', {id: movePlayer.id, x: movePlayer.getX(), y: movePlayer.getY()})
 }

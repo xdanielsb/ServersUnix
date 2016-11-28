@@ -1,58 +1,76 @@
-/*Global Game Controller using phaser */
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '#game-panel', { preload: preload, create: create, update: update , render: render });
+/* global game */
+var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render })
 
-function preload() {
-  game.load.spritesheet('PJIdle', 'assets/PJIdle.png', 80, 157)
-  //game.load.spritesheet('PJJumping', 'assets/PJJumping.png', 107, 161)
-  //game.load.spritesheet('PJRunning', 'assets/PJRunning.png', 104, 156)
-  game.load.image('sky', 'assets/Sky.png')
-  //game.load.image('tile', 'assets/Tile.png')
+function preload () {
+  game.load.image('sky', 'assets/sky.png')
+  game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
+  game.load.spritesheet('enemy', 'assets/dude.png', 32, 48)
+
+  game.load.tilemap('mundo', 'assets/tiles.json', null, Phaser.Tilemap.TILED_JSON);
+  game.load.image('tiles', 'assets/Tile.png');
+
 }
 
-var socket
-
+var socket // Socket connection
+var land
 var player
-
 var enemies
-
-var sky
-
-var platforms;
-
+var currentSpeed = 0
 var cursors
+var map;
+var layer;
 
-
-function create() {
+function create () {
   socket = io.connect()
-  //Characteristics of the world
-  game.world.setBounds(-500, -500, 1000, 1000)
-  game.physics.startSystem(Phaser.Physics.ARCADE);
+  // Resize our game world to be a 2000 x 2000 square
+  //game.world.setBounds(-500, -500, 1000, 1000)
+  // Our tiled scrolling background
+  game.stage.backgroundColor = '#93a9ea';
+  map= game.add.tilemap('mundo')
+  map.addTilesetImage('Tile', 'tiles')
 
-  sky = game.add.tileSprite(0, 0, 800, 600, 'sky')
-  sky.fixedToCamera= true
+  layer = map.createLayer('layer1');
+  console.log("MAP", map);
+  //map.setCollisionBetween(1, 100000, true, 'blockLayer');
+  layer.resizeWorld();
+  console.log('WORLD SIZE: ', layer.width, ' * ', layer.height);
+  map.setCollisionBetween(1, 200, true, 'layer1');
 
-  //PLAYER VARIABLES INITIALISATION
-  var startX = Math.round(Math.random() * (1000) - 500)
-  var startY = 0
-  var dir = 'right'
+  //layer.resizeWorld();
 
-  player = game.add.sprite(startX, startY, 'PJIdle')
-  game.physics.arcade.enable(player);
+  // The base of our player
+  var startX = Math.floor((Math.random() * 1300) + 100);
 
-  player.body.bounce.y = 0.2;
-  player.body.gravity.y = 300;
-  player.body.collideWorldBounds = true;
+  var startY = 500
+
+  console.log('STARTING POSITION: ', startX, ' , ', startY);
+  player = game.add.sprite(startX, startY, 'dude')
+  player.anchor.setTo(0.5, 0.5)
+  player.animations.add('move', [5, 6, 7, 8], 8, true)
+  player.animations.add('stop', [4], 8, true)
+
+  // This will force it to decelerate and limit its speed
+  // player.body.drag.setTo(200, 200)
+  game.physics.enable(player, Phaser.Physics.ARCADE);
+  player.body.maxVelocity.setTo(400, 400)
+  player.body.collideWorldBounds = true
+
+  player.body.gravity.y =400
+
+  // Create some baddies to waste :)
+  enemies = []
+
+  player.bringToTop()
 
   game.camera.follow(player)
   game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300)
   game.camera.focusOnXY(0, 0)
 
+  cursors = game.input.keyboard.createCursorKeys()
 
-  enemies = []
+  // Start listening for events
   setEventHandlers()
-  //game.input.onDown.add(changeTexture, this);
-  cursors = game.input.keyboard.createCursorKeys();
 }
 
 var setEventHandlers = function () {
@@ -104,13 +122,12 @@ function onNewPlayer (data) {
 
   // Add new player to the remote players array
   enemies.push(new RemotePlayer(data.id, game, player, data.x, data.y))
-
 }
 
 // Move player
 function onMovePlayer (data) {
   var movePlayer = playerById(data.id)
-  console.log('On move player:', movePlayer);
+
   // Player not found
   if (!movePlayer) {
     console.log('Player not found: ', data.id)
@@ -125,6 +142,7 @@ function onMovePlayer (data) {
 // Remove player
 function onRemovePlayer (data) {
   var removePlayer = playerById(data.id)
+
   // Player not found
   if (!removePlayer) {
     console.log('Player not found: ', data.id)
@@ -138,7 +156,13 @@ function onRemovePlayer (data) {
 }
 
 function update () {
-
+  game.physics.arcade.collide(player, layer)
+  for (var i = 0; i < enemies.length; i++) {
+    if (enemies[i].alive) {
+      enemies[i].update()
+      game.physics.arcade.collide(player, enemies[i].player)
+    }
+  }
   player.body.velocity.x = 0;
 
     if (cursors.left.isDown)
@@ -146,12 +170,14 @@ function update () {
         //  Move to the left
         player.body.velocity.x = -150;
 
+        player.animations.play('left');
     }
     else if (cursors.right.isDown)
     {
         //  Move to the right
         player.body.velocity.x = 150;
 
+        player.animations.play('right');
     }
     else
     {
@@ -161,7 +187,16 @@ function update () {
         player.frame = 4;
     }
 
-  socket.emit('move player', { x: player.x, y: player.y })
+    //  Allow the player to jump if they are touching the ground.
+    if (cursors.up.isDown && player.body.touching.down)
+    {
+        player.body.velocity.y = -350;
+    }
+
+  //sky.tilePosition.x = -game.camera.x
+  //sky.tilePosition.y = -game.camera.y
+
+  socket.emit('move player', { x: player.x, y: player.y, angle: player.angle })
 }
 
 function render () {
