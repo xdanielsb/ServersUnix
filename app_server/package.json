@@ -11,9 +11,12 @@
   "author": "Rodrigo Alvarez",
   "license": "MIT",
   "dependencies": {
-    "ecstatic": "^2.1.0",
+    "ecstatic": "^1.4.1",
     "express": "^4.14.0",
-    "socket.io": "^1.5.1"
+    "socket.io": "^1.7.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "nodemon": "^0.7.10",
+    "standard": "^5.3.1"
+  }
 }
