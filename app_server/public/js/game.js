@@ -12,6 +12,7 @@ function preload () {
 
 }
 
+
 var socket // Socket connection
 var land
 var player
