@@ -12,6 +12,7 @@ function preload () {
 
 }
 
+
 var socket // Socket connection
 var land
 var player
@@ -21,6 +22,7 @@ var dir
 var cursors
 var map;
 var layer;
+var localPoints = 0
 
 function create () {
   socket = io.connect()
@@ -41,7 +43,7 @@ function create () {
   //layer.resizeWorld();
 
   // The base of our player
-  var startX = Math.floor((Math.random() * 1300) + 100);
+  var startX = Math.floor((Math.random() * 1100) + 100);
   var startY = 500
   dir = 'right'
 
@@ -169,7 +171,7 @@ function update () {
   for (var i = 0; i < enemies.length; i++) {
     if (enemies[i].alive) {
       enemies[i].update()
-      game.physics.arcade.collide(player, enemies[i].player)
+      game.physics.arcade.collide(player, enemies[i].player, killPlayer, null, null)
     }
   }
   player.body.velocity.x = 0;
@@ -226,7 +228,19 @@ function update () {
 function render () {
 
 }
-
+function killPlayer(playerCollided, enemyCollided){
+  //console.log('PLAYER COLLIDED', playerCollided);
+  //console.log('ENEMY COLLIDED', enemyCollided);
+  if (playerCollided.body.touching.down) {
+    localPoints ++;
+    console.log('POINTS', localPoints);
+    playerCollided.body.velocity.y = -600
+    playerCollided.body.velocity.x = Math.floor((Math.random() * (-500)) + 500);
+  }else if (playerCollided.body.touching.up) {
+    player.x = Math.floor((Math.random() * 1100) + 100);
+    player.y = 500
+  }
+}
 // Find player by ID
 function playerById (id) {
   for (var i = 0; i < enemies.length; i++) {
