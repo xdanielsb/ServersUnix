@@ -1,6 +1,7 @@
 #This is the set of configuration need to do in the server side.
 #1. Open this file
 #   sudo vim /etc/vsftpd.conf
+#   in fedora the directory is /etc/vsftpd/vsftpd.conf 
 #2. Config and uncomment the following lines 
 
 ## Listen
@@ -19,4 +20,10 @@
 #chroot_local_user=YES
 
 #3. Restart the daemon
+#   Way 1
 #   sudo /etc/init.d/vsftpd restart 
+#   Way 2
+#   sudo systemctl restart vsftpd
+
+#4. Then set vsftpd to start at boot
+#   sudo systemctl enable vsftpd
