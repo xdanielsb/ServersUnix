@@ -1,0 +1,15 @@
+#Windows
+1. Go to the settings of proxy server
+2. Tick the field custom settings
+3. Ingress the static ip of the server
+4. By default the port is 3128
+
+
+#Linux 
+1. Go the network
+2. Select network proxy
+3. Select in the method the option manual
+4. Ingress the proxy server ip and the port
+*Optional
+5. Ingrese ignore hosts localhost, 127.0.0.0/8 and::1 
+   separated by commas
