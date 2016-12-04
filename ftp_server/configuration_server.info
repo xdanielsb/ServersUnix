@@ -3,10 +3,20 @@
 #   sudo vim /etc/vsftpd.conf
 #2. Config and uncomment the following lines 
 
+## Listen
 # listen=YES
-# anonymous_enable=YES
-# local_enable=YES
-# write_enable=YES
+
+##Disallow anonymous, unidentified users to access files via FTP; change the anonymous_enable setting to NO:
+#anonymous_enable=NO
+
+##Allow local uses to login by changing the local_enable setting to YES:
+#local_enable=YES
+
+##If you want local user to be able to write to a directory, then change the write_enable setting to YES:
+#write_enable=YES
+
+##Local users will be ‘chroot jailed’ and they will be denied access to any other part of the server; change the chroot_local_user setting to YES:
+#chroot_local_user=YES
 
 #3. Restart the daemon
 #   sudo /etc/init.d/vsftpd restart 
