@@ -1,3 +1,4 @@
+#  Distribution of Linux: Ubuntu Server LTS 16.0.]4
 1. Open the following file 
 
 sudo  vim /etc/squid3/squid.conf
