@@ -27,3 +27,14 @@
 
 #4. Then set vsftpd to start at boot
 #   sudo systemctl enable vsftpd
+#
+
+#5. Allow the default FTP port, port 21, through firewall
+#   firewall-cmd --permanent --add-port=21/tcp
+
+#6. Restart the firewall 
+#   firewall-cmd --reload
+#
+
+#7. Possible error 500
+# echo 'allow_writeable_chroot=YES' >> /etc/vsftpd/vsftpd.conf

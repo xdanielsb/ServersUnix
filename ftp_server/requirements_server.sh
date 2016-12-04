@@ -10,4 +10,6 @@ sudo dnf -y update
 #install vsftp and any require packages 
 sudo dnf -y install vsftpd
 
-
+#install openssh
+sudo dnf install openssh
+sudo apt-get install openssh
