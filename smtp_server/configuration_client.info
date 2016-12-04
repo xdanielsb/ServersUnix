@@ -1,0 +1,14 @@
+#This file show how to test the smtp server in ubuntu server
+
+ssmtp recipient_email@example.com
+
+SMTP will then wait for you to type your message, which needs to be formatted like this:
+
+To: recipient_email@example.com
+From: myemailaddress@gmail.com
+Subject: test email
+
+Hello World!
+
+#Finish when you tyye ctrl+d
+

@@ -13,3 +13,7 @@
 *Optional
 5. Ingrese ignore hosts localhost, 127.0.0.0/8 and::1 
    separated by commas
+
+#IP Configuration
+#currently ip server: 172.16.111.136
+#Currently port: 3128

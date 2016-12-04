@@ -1,0 +1,34 @@
+#This server we are going to be with the ftp server
+1.0 
+#due the similarity of functionalities that thes have.
+
+sudo apt-get install mailutils
+2.0
+#Note
+##When the wizard launches choose no configuration , 
+##It is not necesary to do ths work
+
+3.0
+sudo apt-get install ssmtp
+
+4.0
+sudo vim /etc/ssmtp/ssmtp.conf
+Hit “i” to enter Insert mode.
+Uncomment FromLineOverride=YES by deleting the #
+Add the following to the file:
+ 
+ 
+AuthUser=<user>@gmail.com
+AuthPass=Your-Gmail-Password
+mailhub=smtp.gmail.com:587
+UseTLS=YES
+UseSTARTTLS=YES
+
+
+
+Save and close the file:
+Hit Escape
+Type :wq
+Hit Enter
+
+
