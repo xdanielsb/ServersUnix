@@ -1,0 +1,75 @@
+1.0 First modify the names to conf
+sudo vi /etc/named.conf
+
+2.0 Add acls
+
+acl "trusted" {
+        10.128.10.11;    # ns1 - can be set to localhost
+        10.128.20.12;    # ns2
+        10.128.100.101;  # host1
+        10.128.200.102;  # host2
+};
+
+
+3.0 Add options to the servers 
+
+options {
+        listen-on port 53 { 127.0.0.1; 10.128.10.11; };
+#        listen-on-v6 port 53 { ::1; };
+...
+
+
+4.0 Add zones
+
+...
+options {
+...
+        allow-transfer { 10.128.20.12; };      # disable zone transfers by default
+...
+        allow-query { trusted; };  # allows queries from "trusted" clients
+...
+
+5.0 Add to the local domain
+
+include "/etc/named/named.conf.local";
+
+
+6.0 Modify this file
+
+sudo vi /etc/named/named.conf.local
+
+7.0  insert cnofigurations 
+
+zone "nyc3.example.com" {
+    type master;
+    file "/etc/named/zones/db.nyc3.example.com"; # zone file path
+};
+
+
+8.0   Add another domain
+
+zone "128.10.in-addr.arpa" {
+    type master;
+    file "/etc/named/zones/db.10.128";  # 10.128.0.0/16 subnet
+    };
+    
+    
+9.0 Create forward zone file
+
+    sudo chmod 755 /etc/named
+    sudo mkdir /etc/named/zones
+
+
+10.0 Edit our zone file
+
+sudo vi /etc/named/zones/db.nyc3.example.com
+
+11.0 Star bind 
+
+sudo systemctl start named
+sudo systemctl enable named
+
+
+
+
+
