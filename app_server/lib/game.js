@@ -8,6 +8,8 @@ var Player = require('./Player')
 
 var port = process.env.PORT || 8070
 
+console.log("The application is listening in the port " + port)
+
 /* ************************************************
 ** GAME VARIABLES
 ************************************************ */
@@ -23,6 +25,7 @@ var server = http.createServer(
   ecstatic({ root: path.resolve(__dirname, '../public') })
 ).listen(port, function (err) {
   if (err) {
+    console.error(new Error('Whoops, something bad happened '+ err ));
     throw err
   }
 
@@ -50,7 +53,7 @@ var setEventHandlers = function () {
 
 // New socket connection
 function onSocketConnection (client) {
-  util.log('New player has connected: ' + client.id)
+  console.log('New player has connected: ' + client.id)
 
   // Listen for client disconnected
   client.on('disconnect', onClientDisconnect)
@@ -64,13 +67,13 @@ function onSocketConnection (client) {
 
 // Socket client has disconnected
 function onClientDisconnect () {
-  util.log('Player has disconnected: ' + this.id)
+  console.log('Player has disconnected: ' + this.id)
 
   var removePlayer = playerById(this.id)
 
   // Player not found
   if (!removePlayer) {
-    util.log('Player not found: ' + this.id)
+    console.log('Player not found: ' + this.id)
     return
   }
 
@@ -108,7 +111,7 @@ function onMovePlayer (data) {
 
   // Player not found
   if (!movePlayer) {
-    util.log('Player not found: ' + this.id)
+    console.log('Player not found: ' + this.id)
     return
   }
 
